@@ -29,6 +29,8 @@ class Strings {
   static const String toDo = 'TODO';
   static const String color = 'Color';
   static const String taskCompleted = 'Task Completed ';
+  static const String completed = 'COMPLETED';
   static const String deleteTask = 'Delete Task';
   static const String cancel = 'Cancel';
+  static const String onBoardingKey = 'onBoarding';
 }
