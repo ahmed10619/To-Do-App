@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:todo_app/core/database/sqfLite_helper/sqfLite_helper.dart';
+import 'package:todo_app/core/service/service_locator.dart';
 import 'package:todo_app/core/utils/colors.dart';
+import 'package:todo_app/feature/task/data/model/task_model.dart';
 import 'package:todo_app/feature/task/presentation/cubit/task_cubit_state.dart';
 
 class TaskCubitCubit extends Cubit<TaskCubitState> {
@@ -10,6 +13,7 @@ class TaskCubitCubit extends Cubit<TaskCubitState> {
   TextEditingController titleController = TextEditingController();
 
   TextEditingController noteController = TextEditingController();
+  GlobalKey<FormState> fromKey = GlobalKey<FormState>();
 
   DateTime currentDate = DateTime.now();
   String startTime = DateFormat('hh:mm a').format(DateTime.now());
@@ -92,5 +96,71 @@ class TaskCubitCubit extends Cubit<TaskCubitState> {
   void changeChackMarketIndex(index) {
     currentIndex = index;
     emit(ChangeChackMarketIndexState());
+  }
+
+  List<TaskModel> tasksList = [];
+
+  void insertTest() async {
+    emit(InsertLodingState());
+
+    try {
+      await sl<SqfLiteHelper>().insertToDB(
+        TaskModel(
+          title: titleController.text,
+          note: noteController.text,
+          startTime: startTime,
+          endTime: endTime,
+          date: DateFormat.yMd().format(currentDate),
+          isComelate: 0,
+          color: currentIndex,
+        ),
+      );
+      getTasks();
+
+      // tasksList.add(
+      //   TaskModel(
+      //     id: '1',
+      //     title: titleController.text,
+      //     note: noteController.text,
+      //     startTime: startTime,
+      //     endTime: endTime,
+      //     date: DateFormat.yMd().format(currentDate),
+      //     isComelate: false,
+      //     color: currentIndex,
+      //   ),
+      // );
+      titleController.clear();
+      noteController.clear();
+      emit(InsertSucessState());
+    } catch (e) {
+      emit(InsertErrorState());
+    }
+  }
+
+  void getTasks() async {
+    emit(GetLodingState());
+    await sl<SqfLiteHelper>().getFromDB().then((value) {
+      tasksList = value.map((e) => TaskModel.fromjson(e)).toList();
+      emit(GetSucessState());
+    }).catchError((e) {
+      print(e.toString());
+      emit(GetErrorState());
+    });
+  }
+
+  void updateTask(int? id) async {
+    if (id == null) {
+      print("Error: id is null");
+      return;
+    }
+    emit(UpdateLodingState());
+
+    await sl<SqfLiteHelper>().updatedDB(id).then((value) {
+      emit(UpdateSucessState());
+      getTasks();
+    }).catchError((e) {
+      print(e.toString());
+      emit(UpdateErrorState());
+    });
   }
 }

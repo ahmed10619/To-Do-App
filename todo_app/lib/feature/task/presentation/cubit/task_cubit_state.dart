@@ -21,3 +21,21 @@ final class GetEndtTimeSucessgState extends TaskCubitState {}
 final class GetEndtTimeErrorState extends TaskCubitState {}
 
 final class ChangeChackMarketIndexState extends TaskCubitState {}
+
+final class InsertLodingState extends TaskCubitState {}
+
+final class InsertSucessState extends TaskCubitState {}
+
+final class InsertErrorState extends TaskCubitState {}
+
+final class GetLodingState extends TaskCubitState {}
+
+final class GetSucessState extends TaskCubitState {}
+
+final class GetErrorState extends TaskCubitState {}
+
+final class UpdateLodingState extends TaskCubitState {}
+
+final class UpdateSucessState extends TaskCubitState {}
+
+final class UpdateErrorState extends TaskCubitState {}

@@ -33,4 +33,6 @@ class Strings {
   static const String deleteTask = 'Delete Task';
   static const String cancel = 'Cancel';
   static const String onBoardingKey = 'onBoarding';
+  static const String titleErrorMsg = 'Enter Vaild Title';
+  static const String noteErrorMsg = 'Enter Vaild Note';
 }

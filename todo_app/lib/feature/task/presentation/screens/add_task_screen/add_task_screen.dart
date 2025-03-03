@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:todo_app/core/common/commons.dart';
 import 'package:todo_app/core/utils/colors.dart';
 import 'package:todo_app/core/utils/string.dart';
 import 'package:todo_app/core/widgets/custom_elevated_button.dart';
 import 'package:todo_app/feature/auth/presentation/components/add_task_component.dart';
+import 'package:todo_app/feature/task/data/model/task_model.dart';
 import 'package:todo_app/feature/task/presentation/cubit/task_cubit_cubit.dart';
 import 'package:todo_app/feature/task/presentation/cubit/task_cubit_state.dart';
 
@@ -34,21 +37,34 @@ class AddTaskScreen extends StatelessWidget {
             style: Theme.of(context).textTheme.displayLarge,
           ),
         ),
-        body: Form(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 48),
-              child: BlocBuilder<TaskCubitCubit, TaskCubitState>(
-                builder: (context, state) {
-                  final cubit = BlocProvider.of<TaskCubitCubit>(context);
-                  return Column(
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 48),
+            child: BlocConsumer<TaskCubitCubit, TaskCubitState>(
+              listener: (context, state) {
+                if (state is InsertSucessState) {
+                  showToast(msg: 'Added Sucessfuly', state: ToastState.sucess);
+                  Navigator.pop(context);
+                }
+              },
+              builder: (context, state) {
+                final cubit = BlocProvider.of<TaskCubitCubit>(context);
+                return Form(
+                  key: cubit.fromKey,
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       //! title
                       AddTaskComponent(
                         text: Strings.title,
                         controller: cubit.titleController,
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            return Strings.titleErrorMsg;
+                          } else {
+                            return null;
+                          }
+                        },
                         hint: Strings.titleHint,
                       ),
                       SizedBox(
@@ -58,6 +74,13 @@ class AddTaskScreen extends StatelessWidget {
                       AddTaskComponent(
                         text: Strings.note,
                         controller: cubit.noteController,
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            return Strings.noteErrorMsg;
+                          } else {
+                            return null;
+                          }
+                        },
                         hint: Strings.noteHint,
                       ),
                       SizedBox(
@@ -162,16 +185,31 @@ class AddTaskScreen extends StatelessWidget {
                       SizedBox(
                         height: 92.h,
                       ),
-                      SizedBox(
-                        height: 48.h,
-                        width: double.infinity,
-                        child: CustomElevatedButton(
-                            text: Strings.createTask, onPressed: () {}),
-                      ),
+                      state is InsertLodingState
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                              color: AppColors.primary,
+                            ))
+                          : SizedBox(
+                              height: 48.h,
+                              width: double.infinity,
+                              child: CustomElevatedButton(
+                                text: Strings.createTask,
+                                onPressed: () {
+                                  if (BlocProvider.of<TaskCubitCubit>(context)
+                                      .fromKey
+                                      .currentState!
+                                      .validate()) {
+                                    BlocProvider.of<TaskCubitCubit>(context)
+                                        .insertTest();
+                                  }
+                                },
+                              ),
+                            ),
                     ],
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
           ),
         ),

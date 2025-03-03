@@ -9,12 +9,14 @@ class AddTaskComponent extends StatelessWidget {
       this.controller,
       required this.hint,
       this.icon,
-      this.readOnly = false});
+      this.readOnly = false,
+      this.validator});
   final String text;
   final TextEditingController? controller;
   final IconButton? icon;
   final String hint;
   final bool readOnly;
+  final String? Function(String?)? validator;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -30,6 +32,7 @@ class AddTaskComponent extends StatelessWidget {
         TextFormField(
           readOnly: readOnly,
           controller: controller,
+          validator: validator,
           decoration: InputDecoration(
             hintText: hint,
             suffixIcon: icon,
