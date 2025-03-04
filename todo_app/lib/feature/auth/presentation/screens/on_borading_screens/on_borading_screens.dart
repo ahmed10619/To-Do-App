@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:todo_app/core/common/commons.dart';
@@ -79,7 +80,7 @@ class OnBoradingScreens extends StatelessWidget {
                     style: Theme.of(context).textTheme.displayMedium,
                   ),
                   const SizedBox(
-                    height: 200,
+                    height: 100,
                   ),
                   Row(
                     children: [

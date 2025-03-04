@@ -29,13 +29,29 @@ class HomeScreen extends StatelessWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    DateFormat.yMMMMd().format(
-                      DateTime.now(),
-                    ),
-                    style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                          fontSize: 24,
+                  Row(
+                    children: [
+                      Text(
+                        DateFormat.yMMMMd().format(
+                          DateTime.now(),
                         ),
+                        style:
+                            Theme.of(context).textTheme.displayMedium!.copyWith(
+                                  fontSize: 24,
+                                ),
+                      ),
+                      Spacer(),
+                      IconButton(
+                        onPressed: () {
+                          BlocProvider.of<TaskCubitCubit>(context)
+                              .changeTheme();
+                        },
+                        icon: Icon(Icons.mode_night),
+                        color: BlocProvider.of<TaskCubitCubit>(context).isDark
+                            ? AppColors.white
+                            : AppColors.background,
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 12,
@@ -62,10 +78,8 @@ class HomeScreen extends StatelessWidget {
                         monthTextStyle:
                             Theme.of(context).textTheme.displayMedium!,
                         onDateChange: (date) {
-                          // New date selected
-                          // setState(() {
-                          //   _selectedValue = date;
-                          // });
+                          BlocProvider.of<TaskCubitCubit>(context)
+                              .getSelectedDate(date);
                         },
                       ),
                     ),
@@ -120,7 +134,17 @@ class HomeScreen extends StatelessWidget {
                                                   width: double.infinity,
                                                   child: CustomElevatedButton(
                                                     text: Strings.deleteTask,
-                                                    onPressed: () {},
+                                                    onPressed: () {
+                                                      BlocProvider.of<
+                                                                  TaskCubitCubit>(
+                                                              context)
+                                                          .deleteTask(BlocProvider
+                                                                  .of<TaskCubitCubit>(
+                                                                      context)
+                                                              .tasksList[index]
+                                                              .id);
+                                                      Navigator.pop(context);
+                                                    },
                                                     color: AppColors.lightRed,
                                                   ),
                                                 ),

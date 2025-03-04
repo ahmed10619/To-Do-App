@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:todo_app/core/database/cache/cache_helper.dart';
 import 'package:todo_app/core/database/sqfLite_helper/sqfLite_helper.dart';
 import 'package:todo_app/core/service/service_locator.dart';
 import 'package:todo_app/core/utils/colors.dart';
@@ -16,6 +17,7 @@ class TaskCubitCubit extends Cubit<TaskCubitState> {
   GlobalKey<FormState> fromKey = GlobalKey<FormState>();
 
   DateTime currentDate = DateTime.now();
+  DateTime selctedtDate = DateTime.now();
   String startTime = DateFormat('hh:mm a').format(DateTime.now());
   String endTime =
       DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 45)));
@@ -98,6 +100,14 @@ class TaskCubitCubit extends Cubit<TaskCubitState> {
     emit(ChangeChackMarketIndexState());
   }
 
+  void getSelectedDate(date) {
+    emit(GetSelectedDateLoadingState());
+    selctedtDate = date;
+
+    emit(GetSelectedDateSucessgState());
+    getTasks();
+  }
+
   List<TaskModel> tasksList = [];
 
   void insertTest() async {
@@ -140,7 +150,13 @@ class TaskCubitCubit extends Cubit<TaskCubitState> {
   void getTasks() async {
     emit(GetLodingState());
     await sl<SqfLiteHelper>().getFromDB().then((value) {
-      tasksList = value.map((e) => TaskModel.fromjson(e)).toList();
+      tasksList = value
+          .map((e) => TaskModel.fromjson(e))
+          .toList()
+          .where(
+            (element) => element.date == DateFormat.yMd().format(selctedtDate),
+          )
+          .toList();
       emit(GetSucessState());
     }).catchError((e) {
       print(e.toString());
@@ -162,5 +178,33 @@ class TaskCubitCubit extends Cubit<TaskCubitState> {
       print(e.toString());
       emit(UpdateErrorState());
     });
+  }
+
+  void deleteTask(int? id) async {
+    if (id == null) {
+      print("Error: id is null");
+      return;
+    }
+    emit(DeleteLodingState());
+
+    await sl<SqfLiteHelper>().deleteDB(id).then((value) {
+      emit(DeleteSucessState());
+      getTasks();
+    }).catchError((e) {
+      print(e.toString());
+      emit(DeleteErrorState());
+    });
+  }
+
+  bool isDark = false;
+  void changeTheme() async {
+    isDark = !isDark;
+    await sl<CacheHelper>().saveData(key: 'isDark', value: isDark);
+    emit(ChangeThemeState());
+  }
+
+  void getTheme() async {
+    isDark = await sl<CacheHelper>().getData(key: 'isDark') ?? false;
+    emit(GetThemeState());
   }
 }

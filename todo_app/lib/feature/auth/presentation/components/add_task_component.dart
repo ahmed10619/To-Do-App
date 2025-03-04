@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:todo_app/core/utils/colors.dart';
 import 'package:todo_app/core/utils/string.dart';
 
 class AddTaskComponent extends StatelessWidget {
@@ -30,6 +31,9 @@ class AddTaskComponent extends StatelessWidget {
           height: 8.h,
         ),
         TextFormField(
+          style: TextStyle(
+            color: AppColors.white,
+          ),
           readOnly: readOnly,
           controller: controller,
           validator: validator,

@@ -36,7 +36,7 @@ class TaskField extends StatelessWidget {
         builder: (context, state) {
           return Container(
             //  color: AppColors.orange,
-            height: 132,
+            height: 150,
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
                 color: getColor(taskModel.color),

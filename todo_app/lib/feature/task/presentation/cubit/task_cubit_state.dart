@@ -20,6 +20,10 @@ final class GetEndtTimeSucessgState extends TaskCubitState {}
 
 final class GetEndtTimeErrorState extends TaskCubitState {}
 
+final class GetSelectedDateLoadingState extends TaskCubitState {}
+
+final class GetSelectedDateSucessgState extends TaskCubitState {}
+
 final class ChangeChackMarketIndexState extends TaskCubitState {}
 
 final class InsertLodingState extends TaskCubitState {}
@@ -39,3 +43,13 @@ final class UpdateLodingState extends TaskCubitState {}
 final class UpdateSucessState extends TaskCubitState {}
 
 final class UpdateErrorState extends TaskCubitState {}
+
+final class DeleteLodingState extends TaskCubitState {}
+
+final class DeleteSucessState extends TaskCubitState {}
+
+final class DeleteErrorState extends TaskCubitState {}
+
+final class ChangeThemeState extends TaskCubitState {}
+
+final class GetThemeState extends TaskCubitState {}

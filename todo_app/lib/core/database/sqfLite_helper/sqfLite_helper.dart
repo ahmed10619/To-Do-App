@@ -59,7 +59,7 @@ class SqfLiteHelper {
   Future<int> deleteDB(int id) async {
     return await db.rawDelete('''
     DELETE FROM Tasks 
-    WHERE name = ? 
+    WHERE id = ? 
     ''', [id]);
   }
 }
